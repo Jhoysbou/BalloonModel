@@ -9,6 +9,7 @@ export class Point {
     this.x = x
     this.y = y
     this.springs = []
+    console.debug('point created')
   }
 
   attachSpring(point: Point) {
