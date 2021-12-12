@@ -1,15 +1,15 @@
-export enum ActionsTypes {
+export enum ActionsType {
   START_MODELING,
-  STOP_MODELING,
-  PAUSE_MODELING
+  PAUSE_MODELING,
+  STOP_MODELING
 }
 
 export interface Action {
-  type: ActionsTypes,
-  payload: any
+  type: ActionsType,
+  payload?: any
 }
 
-export const createAction = (type: ActionsTypes, payload: any): Action => ({
+export const createAction = (type: ActionsType, payload?: any): Action => ({
   type,
   payload
 })

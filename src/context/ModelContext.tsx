@@ -1,10 +1,13 @@
 import { createContext, FC, PropsWithChildren, useEffect, useState } from 'react'
 import { Point } from '../structs/Point'
-import { Action, ActionsTypes } from './actions'
+import { Action, ActionsType } from './actions'
+import { Wall } from '../structs/Wall'
+import { movePoints } from '../physics/physicsCore'
+import { Vector } from '../structs/Vector'
 
 interface ModelData {
   points: Point[]
-  walls: Point[]
+  walls: Wall[]
 }
 
 interface ModelContextProviderProps {
@@ -23,13 +26,15 @@ export const ModelContextProvider: FC<PropsWithChildren<ModelContextProviderProp
   children,
   balloonCenter = 'center',
   pointsCount = 10,
-  balloonRadius = 70
+  balloonRadius = 50
 }) => {
+  const [mainLooper, setMainLooper] = useState<NodeJS.Timeout>()
   const [modelState, setModelState] = useState<ModelData>({
     points: [],
     walls: []
   })
 
+  // initial state
   useEffect(() => {
     console.debug('generate')
     let center: Point = new Point(350, 350)
@@ -40,24 +45,41 @@ export const ModelContextProvider: FC<PropsWithChildren<ModelContextProviderProp
       points.push(
         new Point(
           center.x + balloonRadius * Math.cos(i * 2 * Math.PI / pointsCount),
-          center.y + balloonRadius * Math.sin(i * 2 * Math.PI / pointsCount)
+          center.y + balloonRadius * Math.sin(i * 2 * Math.PI / pointsCount),
+          new Vector<number>(-1, 0)
         )
       )
+      if (i >= 1) {
+        points[i-1].attachSpring(points[i])
+        if (i === pointsCount - 1) {
+          points[i].attachSpring(points[0])
+        }
+      }
     }
 
-    
-    setModelState({...modelState, points: points})
+    let walls: Wall[] = [
+      new Wall(
+        new Point(100, 600),
+        new Point(100, 100)
+      )
+    ]
+
+
+    setModelState({walls: walls, points: points})
   }, [])
 
   const handler = (action: Action) => {
+    console.debug(`action ${action.type}`)
     switch (action.type) {
-      case ActionsTypes.START_MODELING:
-        //TODO
+      case ActionsType.START_MODELING:
+        setMainLooper(setInterval(() => {
+          const points = movePoints(modelState.points)
+          setModelState({...modelState, points: points})
+        }, 16))
         break
-      case ActionsTypes.PAUSE_MODELING:
-        //TODO
+      case ActionsType.PAUSE_MODELING:
         break
-      case ActionsTypes.STOP_MODELING:
+      case ActionsType.STOP_MODELING:
         //TODO
         break
     }
