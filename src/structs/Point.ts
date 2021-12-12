@@ -23,8 +23,8 @@ export class Point {
     point.springs.push(spring)
   }
 
-  setVelocity(x: number, y: number): void {
-    this.velocity = new Vector<number>(x, y)
+  setVelocity(velocity: Vector<number>): void {
+    this.velocity = velocity
   }
 
   getVelocity(): Vector<number> {

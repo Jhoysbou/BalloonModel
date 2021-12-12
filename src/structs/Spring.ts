@@ -1,9 +1,10 @@
 import { Point } from './Point'
 import { Vector } from './Vector'
+import { SPRING_RATE } from '../physics/constants'
 
 export class Spring {
   // Spring constants
-  private _rate = 1800.0
+  private _rate = SPRING_RATE
   private _KD = 65.0
 
   startPoint: Point
