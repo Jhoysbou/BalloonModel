@@ -4,13 +4,15 @@ import { Vector } from './Vector'
 export class Point {
   x: number
   y: number
-  private velocity?: Vector<number> // px in step
+  private velocity: Vector<number> // px in step
+  private force: Vector<number>
   springs: Spring[]
 
   constructor(x: number, y: number, velocity?: Vector<number>) {
     this.x = x
     this.y = y
-    this.velocity = velocity
+    this.velocity = velocity ? velocity : new Vector<number>(0, 0)
+    this.force = new Vector<number>(0, 0)
     this.springs = []
     console.debug('point created')
   }
@@ -25,7 +27,15 @@ export class Point {
     this.velocity = new Vector<number>(x, y)
   }
 
-  getVelocity(): Vector<number> | undefined {
+  getVelocity(): Vector<number> {
     return this.velocity
+  }
+
+  getForce(): Vector<number> {
+    return this.force
+  }
+
+  setForce(force: Vector<number>): void {
+    this.force = force
   }
 }

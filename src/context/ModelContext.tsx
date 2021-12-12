@@ -2,7 +2,7 @@ import { createContext, FC, PropsWithChildren, useEffect, useState } from 'react
 import { Point } from '../structs/Point'
 import { Action, ActionsType } from './actions'
 import { Wall } from '../structs/Wall'
-import { movePoints } from '../physics/physicsCore'
+import { calculateForces, movePoints } from '../physics/physicsCore'
 import { Vector } from '../structs/Vector'
 
 interface ModelData {
@@ -72,10 +72,11 @@ export const ModelContextProvider: FC<PropsWithChildren<ModelContextProviderProp
     console.debug(`action ${action.type}`)
     switch (action.type) {
       case ActionsType.START_MODELING:
-        setMainLooper(setInterval(() => {
-          const points = movePoints(modelState.points)
-          setModelState({...modelState, points: points})
-        }, 16))
+        // setMainLooper(setInterval(() => {
+        //   const points = movePoints(modelState.points)
+        //   setModelState({...modelState, points: points})
+        // }, 16))
+        calculateForces(modelState.points)
         break
       case ActionsType.PAUSE_MODELING:
         break
