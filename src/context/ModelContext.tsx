@@ -4,13 +4,17 @@ import { Action, ActionsType } from './actions'
 import { Wall } from '../structs/Wall'
 import { calculateForces, integrate } from '../physics/physicsCore'
 import { PRESSURE, TIME_STEP } from '../physics/constants'
+import { Vector } from '../structs/Vector'
 
 let pressure = 0
+let tfs = 0
 
 export interface ModelData {
   points: Point[]
   walls: Wall[]
   pressure: number
+  // Time from start
+  TFS: number
 }
 
 interface ModelContextProviderProps {
@@ -27,7 +31,7 @@ export const ModelContext = createContext<ModelType>(null)
 
 export const ModelContextProvider: FC<PropsWithChildren<ModelContextProviderProps>> = ({
   children,
-  balloonCenter = 'center',
+  balloonCenter = 'close',
   pointsCount = 20,
   balloonRadius = 50
 }) => {
@@ -35,13 +39,32 @@ export const ModelContextProvider: FC<PropsWithChildren<ModelContextProviderProp
   const [modelState, setModelState] = useState<ModelData>({
     points: [],
     walls: [],
-    pressure: 0
+    pressure: 0,
+    TFS: 0
   })
 
   // initial state
   useEffect(() => {
     console.debug('generate')
+
+    let walls: Wall[] = [
+      new Wall(
+        new Point(100, 600),
+        new Point(100, 100)
+      )
+    ]
+
     let center: Point = new Point(350, 350)
+
+    switch (balloonCenter) {
+      case 'far':
+        center = new Point(500, 350)
+        break
+      case 'close':
+        center = new Point(100 + balloonRadius + 10, 350)
+        break
+      default:
+    }
 
     let points: Point[] = []
 
@@ -50,6 +73,7 @@ export const ModelContextProvider: FC<PropsWithChildren<ModelContextProviderProp
         new Point(
           center.x + balloonRadius * Math.cos(i * 2 * Math.PI / pointsCount),
           center.y + balloonRadius * Math.sin(i * 2 * Math.PI / pointsCount),
+          new Vector<number>(-1, 0)
         )
       )
       if (i >= 1) {
@@ -59,13 +83,6 @@ export const ModelContextProvider: FC<PropsWithChildren<ModelContextProviderProp
         }
       }
     }
-
-    let walls: Wall[] = [
-      new Wall(
-        new Point(100, 600),
-        new Point(100, 100)
-      )
-    ]
 
     points = calculateForces(points, modelState.pressure)
     setModelState({...modelState, walls: walls, points: points})
@@ -80,14 +97,15 @@ export const ModelContextProvider: FC<PropsWithChildren<ModelContextProviderProp
             pressure += PRESSURE / 100
           }
           const points = integrate({...modelState, pressure: pressure})
-          setModelState({...modelState, points: points})
+          tfs = tfs + TIME_STEP
+          setModelState({...modelState, points: points, TFS: tfs})
         }, TIME_STEP))
         break
       case ActionsType.PAUSE_MODELING:
-        // TODO
+        if (mainLooper) {clearInterval(mainLooper)}
         break
       case ActionsType.STOP_MODELING:
-        if (mainLooper) {clearInterval(mainLooper)}
+        // TODO
         break
     }
   }

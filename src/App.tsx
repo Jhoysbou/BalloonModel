@@ -71,6 +71,7 @@ function App() {
       >
         Stop
       </button>
+      {/*<div>Time from start: {data.TFS.toFixed(2)} s</div>*/}
     </div>
   )
 }

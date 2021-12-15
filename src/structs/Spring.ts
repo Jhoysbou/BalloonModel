@@ -34,9 +34,7 @@ export class Spring {
     )
     const currentLength = this.getLength()
 
-    const f = (currentLength - this.defaultLength) * this._rate +
-      (diffVelocity.x * (this.startPoint.x - this.endPoint.x) +
-        diffVelocity.y * (this.startPoint.y - this.endPoint.y)) * this._KD / currentLength
+    const f = (currentLength - this.defaultLength) * this._rate
 
     const force: Vector<number> = new Vector<number>(
       ((this.startPoint.x - this.endPoint.x) / currentLength) * f,

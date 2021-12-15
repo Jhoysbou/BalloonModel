@@ -56,46 +56,70 @@ export const calculateForces = (points: Point[], pressure: number): Point[] => {
 
   let volume = 0.
 
-  springs.forEach((spring) => {
-    const force: Vector<number> = spring!.getSpringForce()
-    const springLength = spring!.getLength()
+  points.forEach((point) => {
+    const spring: Spring = point.spring!
 
-    let currentStartForce = spring!.startPoint.getForce()
-    let currentEndForce = spring!.endPoint.getForce()
+    const force: Vector<number> = spring.getSpringForce()
+    const springLength = spring.getLength()
+
+    let currentStartForce = spring.startPoint.getForce()
+    let currentEndForce = spring.endPoint.getForce()
 
     //Update force for start point
-    spring!.startPoint.setForce(new Vector<number>(
+    spring.startPoint.setForce(new Vector<number>(
       currentStartForce.x - force.x,
       currentStartForce.y - force.y
     ))
 
     //Update force for end point
-    spring!.endPoint.setForce(new Vector<number>(
+    spring.endPoint.setForce(new Vector<number>(
       currentEndForce.x + force.x,
       currentEndForce.y + force.y
     ))
 
+  })
+
+  points.forEach(point => {
+    const spring = point.spring!
+    const springLength = spring.getLength()
     // Update normal to a spring
-    spring!.normal = spring!.getNormalVector()
+    spring.normal = spring.getNormalVector()
 
     // Calculate the volume
-    volume += 0.5 * Math.abs(spring!.startPoint.x - spring!.endPoint.x) * Math.abs(spring!.normal.x) * springLength
+    volume += 0.5 * Math.abs(spring.startPoint.x - spring.endPoint.x) * Math.abs(spring.normal.x) * springLength
+  })
+
+  points.forEach(points => {
+    const spring = points.spring!
+
+    const force: Vector<number> = spring.getSpringForce()
+    const springLength = spring.getLength()
+
+    const currentStartForce = spring.startPoint.getForce()
+    const currentEndForce = spring.endPoint.getForce()
 
     // Pressure
     let springPressure = springLength * pressure / volume
-    currentEndForce = spring!.endPoint.getForce()
-    currentStartForce = spring!.startPoint.getForce()
 
     //Update force for start point
-    spring!.startPoint.setForce(new Vector<number>(
-      currentStartForce.x + spring!.normal.x * springPressure,
-      currentStartForce.y + spring!.normal.y * springPressure
+    spring.startPoint.setForce(new Vector<number>(
+      currentStartForce.x + spring.normal.x * springPressure,
+      currentStartForce.y + spring.normal.y * springPressure
     ))
 
     //Update force for end point
-    spring!.endPoint.setForce(new Vector<number>(
-      currentEndForce.x + spring!.normal.x * springPressure,
-      currentEndForce.y + spring!.normal.y * springPressure
+    spring.endPoint.setForce(new Vector<number>(
+      currentEndForce.x + spring.normal.x * springPressure,
+      currentEndForce.y + spring.normal.y * springPressure
+    ))
+  })
+
+  points.forEach(point => {
+    const pointForce = point.getForce()
+
+    point.setForce(new Vector<number>(
+      pointForce.x - gradPotential(Math.abs(point.x - 100)),
+      pointForce.y
     ))
   })
 
