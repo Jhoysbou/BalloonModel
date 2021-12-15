@@ -21,7 +21,7 @@ export class Spring {
 
   getLength(): number {
     return Math.sqrt(
-      (this.startPoint.x - this.endPoint.x) ^ 2 + (this.startPoint.y - this.endPoint.y) ^ 2
+      (this.startPoint.x - this.endPoint.x) ** 2 + (this.startPoint.y - this.endPoint.y) ** 2
     )
   }
 
@@ -43,20 +43,14 @@ export class Spring {
       ((this.startPoint.y - this.endPoint.y) / currentLength) * f
     )
 
-    // const currentForce = this.startPoint.getForce()
-    //
-    // this.startPoint.setForce(new Vector<number>(
-    //   currentForce.x - force.x,
-    //   currentForce.y - force.y
-    // ))
-
     return force
   }
 
   getNormalVector(): Vector<number> {
+    const length = this.getLength()
     return new Vector<number>(
-      -(this.startPoint.y - this.endPoint.y) / this.defaultLength,
-      (this.startPoint.x - this.endPoint.x) / this.defaultLength
+      -(this.startPoint.y - this.endPoint.y) / length,
+      (this.startPoint.x - this.endPoint.x) / length
     )
   }
 }

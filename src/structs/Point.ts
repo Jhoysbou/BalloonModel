@@ -6,21 +6,18 @@ export class Point {
   y: number
   private velocity: Vector<number> // px in step
   private force: Vector<number>
-  springs: Spring[]
+  spring?: Spring
 
   constructor(x: number, y: number, velocity?: Vector<number>) {
     this.x = x
     this.y = y
     this.velocity = velocity ? velocity : new Vector<number>(0, 0)
     this.force = new Vector<number>(0, 0)
-    this.springs = []
     console.debug('point created')
   }
 
   attachSpring(point: Point): void {
-    let spring = new Spring(this, point)
-    this.springs.push(spring)
-    point.springs.push(spring)
+    this.spring = new Spring(this, point)
   }
 
   setVelocity(velocity: Vector<number>): void {

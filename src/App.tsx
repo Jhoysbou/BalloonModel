@@ -23,10 +23,10 @@ function App() {
       context.fill();
       context.strokeStyle = 'blue'
 
-      point.springs.forEach(spring => {
-        context.moveTo(spring.startPoint.x, spring.startPoint.y)
-        context.lineTo(spring.endPoint.x, spring.endPoint.y)
-      })
+      const spring = point.spring!
+      context.moveTo(spring.startPoint.x, spring.startPoint.y)
+      context.lineTo(spring.endPoint.x, spring.endPoint.y)
+
       context.stroke()
       context.closePath()
     })

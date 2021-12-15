@@ -3,8 +3,9 @@ import { Point } from '../structs/Point'
 import { Action, ActionsType } from './actions'
 import { Wall } from '../structs/Wall'
 import { calculateForces, integrate } from '../physics/physicsCore'
-import { Vector } from '../structs/Vector'
 import { PRESSURE, TIME_STEP } from '../physics/constants'
+
+let pressure = 0
 
 export interface ModelData {
   points: Point[]
@@ -27,7 +28,7 @@ export const ModelContext = createContext<ModelType>(null)
 export const ModelContextProvider: FC<PropsWithChildren<ModelContextProviderProps>> = ({
   children,
   balloonCenter = 'center',
-  pointsCount = 10,
+  pointsCount = 20,
   balloonRadius = 50
 }) => {
   const [mainLooper, setMainLooper] = useState<NodeJS.Timeout>()
@@ -75,10 +76,10 @@ export const ModelContextProvider: FC<PropsWithChildren<ModelContextProviderProp
     switch (action.type) {
       case ActionsType.START_MODELING:
         setMainLooper(setInterval(() => {
-          const points = integrate(modelState)
-          if (modelState.pressure < PRESSURE) {
-            setModelState({...modelState, points: points, pressure: modelState.pressure + 50})
+          if (pressure < PRESSURE) {
+            pressure += PRESSURE / 100
           }
+          const points = integrate({...modelState, pressure: pressure})
           setModelState({...modelState, points: points})
         }, TIME_STEP))
         break
@@ -86,7 +87,7 @@ export const ModelContextProvider: FC<PropsWithChildren<ModelContextProviderProp
         // TODO
         break
       case ActionsType.STOP_MODELING:
-        //TODO
+        if (mainLooper) {clearInterval(mainLooper)}
         break
     }
   }
