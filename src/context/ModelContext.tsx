@@ -30,8 +30,8 @@ export type ModelType = [ModelData, InitialConditionType, (arg0: Action) => void
 export const ModelContext = createContext<ModelType>(null)
 
 export const ModelContextProvider: FC<PropsWithChildren<{}>> = ({
-  children
-}) => {
+                                                                  children
+                                                                }) => {
   const [initialConditions, setInitialConditions] = useState<InitialConditionType>({
     balloonCenter: 'close',
     pointsCount: 20,
@@ -81,7 +81,7 @@ export const ModelContextProvider: FC<PropsWithChildren<{}>> = ({
         )
       )
       if (i >= 1) {
-        points[i-1].attachSpring(points[i])
+        points[i - 1].attachSpring(points[i])
         if (i === initialConditions.pointsCount - 1) {
           points[i].attachSpring(points[0])
         }
@@ -92,7 +92,16 @@ export const ModelContextProvider: FC<PropsWithChildren<{}>> = ({
     setModelState({...modelState, walls: walls, points: points})
   }
 
-  const stopModeling = () => {if (mainLooper) {clearInterval(mainLooper)}}
+  const stopModeling = () => {
+    if (mainLooper) {
+      clearInterval(mainLooper)
+    }
+  }
+
+  const validateIC = (initCond: InitialConditionType) => {
+    return !(initCond.balloonRadius < 25 || initCond.balloonRadius > 100 ||
+      initCond.pointsCount < 5 || initCond.pointsCount > 50)
+  }
 
   const handler = (action: Action) => {
     console.debug(`action ${action.type}`)
@@ -116,10 +125,14 @@ export const ModelContextProvider: FC<PropsWithChildren<{}>> = ({
         break
       case ActionsType.CHANGE_INITIAL_CONDITIONS:
         stopModeling()
-        setInitialConditions({
+        const newInitialConditions = {
           ...initialConditions,
           ...action.payload
-        })
+        }
+        if (validateIC(newInitialConditions)) {
+          setInitialConditions(newInitialConditions)
+        }
+
         break
     }
   }

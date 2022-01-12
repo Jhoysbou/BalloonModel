@@ -75,6 +75,8 @@ function App() {
       {/*<div>Time from start: {data.TFS.toFixed(2)} s</div>*/}
       <input type="number"
              value={initialConditions.pointsCount}
+             min={5}
+             max={50}
              onChange={e => {
                handler(
                  createAction(
@@ -87,11 +89,13 @@ function App() {
       />
       <input type="number"
              value={initialConditions.balloonRadius}
+             min={25}
+             max={100}
              onChange={e => {
                handler(
                  createAction(
                    ActionsType.CHANGE_INITIAL_CONDITIONS,
-                   {balloonRadius: e.target.value}
+                   {balloonRadius: parseInt(e.target.value)}
                  )
                )
              }}
