@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useRef } from 'react'
+import React, {useContext, useEffect, useRef} from 'react'
 import './App.css'
-import { ActionsType, createAction } from './context/actions'
-import { ModelContext } from './context/ModelContext'
+import {ActionsType, createAction} from './context/actions'
+import {ModelContext} from './context/ModelContext'
 
 const canvasSize = {
   width: 700,
@@ -9,7 +9,8 @@ const canvasSize = {
 }
 
 function App() {
-  const [data, handler] = useContext(ModelContext)
+  const [data, initialConditions, handler] = useContext(ModelContext)
+
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   const connectCanvas = (func: (canvas: CanvasRenderingContext2D) => void) => () => func(canvasRef.current!.getContext('2d')!)
@@ -72,6 +73,30 @@ function App() {
         Stop
       </button>
       {/*<div>Time from start: {data.TFS.toFixed(2)} s</div>*/}
+      <input type="number"
+             value={initialConditions.pointsCount}
+             onChange={e => {
+               handler(
+                 createAction(
+                   ActionsType.CHANGE_INITIAL_CONDITIONS,
+                   {pointsCount: e.target.value}
+                 )
+               )
+               console.debug(e.target.value)
+             }}
+      />
+      <input type="number"
+             value={initialConditions.balloonRadius}
+             onChange={e => {
+               handler(
+                 createAction(
+                   ActionsType.CHANGE_INITIAL_CONDITIONS,
+                   {balloonRadius: e.target.value}
+                 )
+               )
+             }}
+      />
+
     </div>
   )
 }

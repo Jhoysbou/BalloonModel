@@ -1,10 +1,10 @@
-import { createContext, FC, PropsWithChildren, useEffect, useState } from 'react'
-import { Point } from '../structs/Point'
-import { Action, ActionsType } from './actions'
-import { Wall } from '../structs/Wall'
-import { calculateForces, integrate } from '../physics/physicsCore'
-import { PRESSURE, TIME_STEP } from '../physics/constants'
-import { Vector } from '../structs/Vector'
+import {createContext, FC, PropsWithChildren, useEffect, useState} from 'react'
+import {Point} from '../structs/Point'
+import {Action, ActionsType} from './actions'
+import {Wall} from '../structs/Wall'
+import {calculateForces, integrate} from '../physics/physicsCore'
+import {PRESSURE, TIME_STEP} from '../physics/constants'
+import {Vector} from '../structs/Vector'
 
 let pressure = 0
 let tfs = 0
@@ -17,24 +17,26 @@ export interface ModelData {
   TFS: number
 }
 
-interface ModelContextProviderProps {
-  pointsCount?: number
-  balloonCenter?: [x: number, y: number] | 'center' | 'close' | 'far'
-  balloonRadius?: number
+interface InitialConditionType {
+  pointsCount: number
+  balloonCenter: [x: number, y: number] | 'center' | 'close' | 'far'
+  balloonRadius: number
 }
 
-export type ModelType = [ModelData, (arg0: Action) => void]
+export type ModelType = [ModelData, InitialConditionType, (arg0: Action) => void]
 
 // I know it's bad :|
 // @ts-ignore
 export const ModelContext = createContext<ModelType>(null)
 
-export const ModelContextProvider: FC<PropsWithChildren<ModelContextProviderProps>> = ({
-  children,
-  balloonCenter = 'close',
-  pointsCount = 20,
-  balloonRadius = 50
+export const ModelContextProvider: FC<PropsWithChildren<{}>> = ({
+  children
 }) => {
+  const [initialConditions, setInitialConditions] = useState<InitialConditionType>({
+    balloonCenter: 'close',
+    pointsCount: 20,
+    balloonRadius: 50
+  })
   const [mainLooper, setMainLooper] = useState<NodeJS.Timeout>()
   const [modelState, setModelState] = useState<ModelData>({
     points: [],
@@ -45,8 +47,10 @@ export const ModelContextProvider: FC<PropsWithChildren<ModelContextProviderProp
 
   // initial state
   useEffect(() => {
-    console.debug('generate')
+    createPhysicsState()
+  }, [initialConditions])
 
+  const createPhysicsState = () => {
     let walls: Wall[] = [
       new Wall(
         new Point(100, 600),
@@ -56,29 +60,29 @@ export const ModelContextProvider: FC<PropsWithChildren<ModelContextProviderProp
 
     let center: Point = new Point(350, 350)
 
-    switch (balloonCenter) {
+    switch (initialConditions.balloonCenter) {
       case 'far':
         center = new Point(500, 350)
         break
       case 'close':
-        center = new Point(100 + balloonRadius + 10, 350)
+        center = new Point(100 + initialConditions.balloonRadius + 10, 350)
         break
       default:
     }
 
     let points: Point[] = []
 
-    for (let i = 0; i < pointsCount; i++) {
+    for (let i = 0; i < initialConditions.pointsCount; i++) {
       points.push(
         new Point(
-          center.x + balloonRadius * Math.cos(i * 2 * Math.PI / pointsCount),
-          center.y + balloonRadius * Math.sin(i * 2 * Math.PI / pointsCount),
+          center.x + initialConditions.balloonRadius * Math.cos(i * 2 * Math.PI / initialConditions.pointsCount),
+          center.y + initialConditions.balloonRadius * Math.sin(i * 2 * Math.PI / initialConditions.pointsCount),
           new Vector<number>(-1, 0)
         )
       )
       if (i >= 1) {
         points[i-1].attachSpring(points[i])
-        if (i === pointsCount - 1) {
+        if (i === initialConditions.pointsCount - 1) {
           points[i].attachSpring(points[0])
         }
       }
@@ -86,7 +90,9 @@ export const ModelContextProvider: FC<PropsWithChildren<ModelContextProviderProp
 
     points = calculateForces(points, modelState.pressure)
     setModelState({...modelState, walls: walls, points: points})
-  }, [])
+  }
+
+  const stopModeling = () => {if (mainLooper) {clearInterval(mainLooper)}}
 
   const handler = (action: Action) => {
     console.debug(`action ${action.type}`)
@@ -102,15 +108,23 @@ export const ModelContextProvider: FC<PropsWithChildren<ModelContextProviderProp
         }, TIME_STEP))
         break
       case ActionsType.PAUSE_MODELING:
-        if (mainLooper) {clearInterval(mainLooper)}
+        stopModeling()
         break
       case ActionsType.STOP_MODELING:
-        // TODO
+        stopModeling()
+        createPhysicsState()
+        break
+      case ActionsType.CHANGE_INITIAL_CONDITIONS:
+        stopModeling()
+        setInitialConditions({
+          ...initialConditions,
+          ...action.payload
+        })
         break
     }
   }
 
   return (
-    <ModelContext.Provider value={[modelState, handler]}>{children}</ModelContext.Provider>
+    <ModelContext.Provider value={[modelState, initialConditions, handler]}>{children}</ModelContext.Provider>
   )
 }
