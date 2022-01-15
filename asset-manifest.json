@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/BalloonModel/static/css/main.ea1455b2.chunk.css",
-    "main.js": "/BalloonModel/static/js/main.2c766025.chunk.js",
-    "main.js.map": "/BalloonModel/static/js/main.2c766025.chunk.js.map",
+    "main.css": "/BalloonModel/static/css/main.2e45c9f7.chunk.css",
+    "main.js": "/BalloonModel/static/js/main.8a60bb3c.chunk.js",
+    "main.js.map": "/BalloonModel/static/js/main.8a60bb3c.chunk.js.map",
     "runtime-main.js": "/BalloonModel/static/js/runtime-main.3692ed00.js",
     "runtime-main.js.map": "/BalloonModel/static/js/runtime-main.3692ed00.js.map",
     "static/js/2.401b4ff2.chunk.js": "/BalloonModel/static/js/2.401b4ff2.chunk.js",
     "static/js/2.401b4ff2.chunk.js.map": "/BalloonModel/static/js/2.401b4ff2.chunk.js.map",
     "index.html": "/BalloonModel/index.html",
-    "static/css/main.ea1455b2.chunk.css.map": "/BalloonModel/static/css/main.ea1455b2.chunk.css.map",
+    "static/css/main.2e45c9f7.chunk.css.map": "/BalloonModel/static/css/main.2e45c9f7.chunk.css.map",
     "static/js/2.401b4ff2.chunk.js.LICENSE.txt": "/BalloonModel/static/js/2.401b4ff2.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.3692ed00.js",
     "static/js/2.401b4ff2.chunk.js",
-    "static/css/main.ea1455b2.chunk.css",
-    "static/js/main.2c766025.chunk.js"
+    "static/css/main.2e45c9f7.chunk.css",
+    "static/js/main.8a60bb3c.chunk.js"
   ]
 }
