@@ -1,0 +1,23 @@
+.App {
+    display: flex;
+    flex-direction: column;
+    gap: 20px
+}
+
+.App > canvas {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.controls {
+    width: 700px;
+    display: flex;
+    flex-direction: row;
+
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.controls > :nth-last-child(-n+5) {
+    margin-right: 10px;
+}

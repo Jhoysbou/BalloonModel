@@ -57,50 +57,52 @@ function App() {
   return (
     <div className="App">
       <canvas ref={canvasRef} width={canvasSize.width} height={canvasSize.height}/>
-      <button
-        onClick={() => handler(createAction(ActionsType.START_MODELING))}
-      >
-        Start
-      </button>
-      <button
-        onClick={() => handler(createAction(ActionsType.PAUSE_MODELING))}
-      >
-        Pause
-      </button>
-      <button
-        onClick={() => handler(createAction(ActionsType.STOP_MODELING))}
-      >
-        Stop
-      </button>
-      {/*<div>Time from start: {data.TFS.toFixed(2)} s</div>*/}
-      <input type="number"
-             value={initialConditions.pointsCount}
-             min={5}
-             max={50}
-             onChange={e => {
-               handler(
-                 createAction(
-                   ActionsType.CHANGE_INITIAL_CONDITIONS,
-                   {pointsCount: e.target.value}
+      <div className="controls">
+        <button
+          onClick={() => handler(createAction(ActionsType.START_MODELING))}
+        >
+          Start
+        </button>
+        <button
+          onClick={() => handler(createAction(ActionsType.PAUSE_MODELING))}
+        >
+          Pause
+        </button>
+        <button
+          onClick={() => handler(createAction(ActionsType.STOP_MODELING))}
+        >
+          Stop
+        </button>
+        <span>Particles count:</span>
+        <input type="number"
+               value={initialConditions.pointsCount}
+               min={5}
+               max={50}
+               onChange={e => {
+                 handler(
+                   createAction(
+                     ActionsType.CHANGE_INITIAL_CONDITIONS,
+                     {pointsCount: e.target.value}
+                   )
                  )
-               )
-               console.debug(e.target.value)
-             }}
-      />
-      <input type="number"
-             value={initialConditions.balloonRadius}
-             min={25}
-             max={100}
-             onChange={e => {
-               handler(
-                 createAction(
-                   ActionsType.CHANGE_INITIAL_CONDITIONS,
-                   {balloonRadius: parseInt(e.target.value)}
+                 console.debug(e.target.value)
+               }}
+        />
+        <span>Radius:</span>
+        <input type="number"
+               value={initialConditions.balloonRadius}
+               min={25}
+               max={100}
+               onChange={e => {
+                 handler(
+                   createAction(
+                     ActionsType.CHANGE_INITIAL_CONDITIONS,
+                     {balloonRadius: parseInt(e.target.value)}
+                   )
                  )
-               )
-             }}
-      />
-
+               }}
+        />
+      </div>
     </div>
   )
 }
