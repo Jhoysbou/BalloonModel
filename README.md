@@ -1,1 +1,1 @@
-![](video/balloon_demo.mov)
+![](video/balloon_demo.gif)
