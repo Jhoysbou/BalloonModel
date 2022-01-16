@@ -13,6 +13,6 @@ The forces applied to particles:
 
 ## Simulation
 
-The simulation is written in Typescript and supports two parameters.
+The simulation is written in Typescript with React and supports two parameters: \
 The number of particles in a model and a radius of the balloon.
 
