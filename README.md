@@ -1,18 +1,20 @@
-# Getting Started with Create React App
+# Simulation of a balloon collision with a wall using the Lennard Jones potential
+## [Demo](https://jhoysbou.github.io/BalloonModel/)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![](media/balloon_demo.gif)
 
-## Available Scripts
+## Physics
 
-In the project directory, you can run:
+The balloon is a set of a particles connected to each other with linear springs.\
+The pressure is represented as P = k(V / V<sub>0</sub> – 1).
 
-### `npm start`
+The forces applied to particles:
+![](media/forces.jpg)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Simulation
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+The simulation is written in Typescript with React and supports two parameters: \
+The number of particles in a model and a radius of the balloon.
 
 ### `npm test`
 
